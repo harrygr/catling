@@ -3,14 +3,14 @@ import { returnVoid, wrap } from './utils'
 
 export interface Either<L, R> {
   toString: () => string
-  map<B>(fn: (value: R) => B): Either<L, B>
-  leftMap<B>(fn: (value: L) => B): Either<B, R>
-  flatMap<B>(fn: (value: R) => Either<L, B>): Either<L, B>
+  map: <B>(fn: (value: R) => B) => Either<L, B>
+  leftMap: <B>(fn: (value: L) => B) => Either<B, R>
+  flatMap: <B>(fn: (value: R) => Either<L, B>) => Either<L, B>
   right(): R | void
   left(): L | void
   toOption: () => Option<R>
-  fold<B>(acc: B): (fn: (acc: B, value: R) => B) => B
-  foldLeft<B>(acc: B): (fn: (acc: B, value: L) => B) => B
+  fold: <B>(acc: B) => (fn: (acc: B, value: R) => B) => B
+  foldLeft: <B>(acc: B) => (fn: (acc: B, value: L) => B) => B
 }
 
 export interface Right<T> extends Either<any, T> {}

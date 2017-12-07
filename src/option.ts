@@ -4,11 +4,11 @@ export interface Option<T> {
   type: 'some' | 'none'
   isSome: () => boolean
   get: () => T | void
-  map<K>(fn: (value: T) => K): Option<K>
-  flatMap<K>(fn: (value: T) => Option<K>): Option<K>
+  map: <K>(fn: (value: T) => K) => Option<K>
+  flatMap: <K>(fn: (value: T) => Option<K>) => Option<K>
   fold: <K, P>(ifEmpty: K) => (rightFn: (value: T) => P) => K | P
-  filter(fn: (value: T) => boolean): Some<T> | None
-  getOrElse<K>(alternative: K): T | K
+  filter: (fn: (value: T) => boolean) => Some<T> | None
+  getOrElse: <K>(alternative: K) => T | K
   toString: () => string
 }
 

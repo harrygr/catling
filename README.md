@@ -1,4 +1,4 @@
-# Catling
+# Catling 🔫🐈
 
 A monad library in TypeScript
 
