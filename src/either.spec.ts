@@ -11,10 +11,18 @@ describe('Either', () => {
       const right = Right('foo').map(s => s.length)
       expect(right.right()).toBe(3)
     })
+
+    it('flatMaps over its value', () => {
+      const either = Right('foo').flatMap(() => Right(3))
+
+      expect(either.right()).toBe(3)
+    })
+
     it('left maps over a right with no effect', () => {
       const right = Right('foo').leftMap(s => s.length)
       expect(right.right()).toBe('foo')
     })
+
     it('folds over the value', () => {
       const result = Right('foo').fold(e => `failed with ${e}`)(v => `succeeded with ${v}`)
       expect(result).toBe('succeeded with foo')
@@ -32,7 +40,13 @@ describe('Either', () => {
       expect(right.left()).toBe('foo')
     })
 
-    it('left maps over a left', () => {
+    it('flatMaps over a left with no effect', () => {
+      const either = Left('gah').flatMap(() => Right(3))
+
+      expect(either.left()).toBe('gah')
+    })
+
+    it('leftMaps over a left', () => {
       const left = Left('gah').leftMap(s => s.length)
       expect(left.left()).toBe(3)
     })
