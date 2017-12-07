@@ -1,0 +1,48 @@
+{
+  "name": "catling",
+  "version": "0.0.1",
+  "description": "A monad library in TypeScript",
+  "author": {
+    "name": "Harry Grumbar",
+    "url": "https://github.com/harrygr"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 6.9.0"
+  },
+  "devDependencies": {
+    "@types/jest": "~20.0.4",
+    "@types/node": "~6.0.85",
+    "jest": "~20.0.0",
+    "rimraf": "~2.6.1",
+    "tsutils": "~2.7.1",
+    "typescript": "~2.4.2",
+    "ts-jest": "^20.0.10"
+  },
+  "scripts": {
+    "clean": "rimraf coverage build tmp",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -w -p tsconfig.json",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "tslib": "~1.7.1"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "parser": "typescript"
+  },
+  "jest": {
+    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": ["**/*.spec.(ts|tsx|js)"]
+  }
+}
