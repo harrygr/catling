@@ -31,7 +31,7 @@ describe('Option', () => {
     })
 
     it('implements a flatMap method', () => {
-      const result = None().flatMap(val => `${val}bar`)
+      const result = None().flatMap(val => Some(`${val}bar`))
 
       expect(result.type).toBe('none')
     })
@@ -39,7 +39,7 @@ describe('Option', () => {
     it('implements a fold method', () => {
       const option = None()
 
-      expect(option.fold(() => 'foo', v => v)).toBe('foo')
+      expect(option.fold('foo')(v => v)).toBe('foo')
     })
 
     it('implements a getOrElse method', () => {
@@ -65,9 +65,9 @@ describe('Option', () => {
     })
 
     it('implements a flatMap method', () => {
-      const result = Some('foo').flatMap(val => `${val}bar`)
+      const result = Some('foo').flatMap(val => Some(`${val}bar`))
 
-      expect(result).toBe('foobar')
+      expect(result.get()).toBe('foobar')
     })
 
     it('returns a None if the map method results in undefined or null', () => {
@@ -79,7 +79,7 @@ describe('Option', () => {
     it('implements a fold method', () => {
       const option = Some('hello')
 
-      expect(option.fold(() => 'foo', v => v)).toBe('hello')
+      expect(option.fold('foo')(v => v)).toBe('hello')
     })
 
     it('implements a filter method', () => {

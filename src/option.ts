@@ -1,10 +1,12 @@
+import { returnFalse, returnVoid, identity } from './utils'
+
 export interface Option<T> {
   type: 'some' | 'none'
   isSome: () => boolean
   get: () => T | void
   map<K>(fn: (value: T) => K): Option<K>
-  flatMap<K>(fn: (value: T) => K | None)
-  fold<K, P>(leftFn: () => K, rightFn: (value: T) => P): K | P
+  flatMap<K>(fn: (value: T) => Option<K>): Option<K>
+  fold: <K, P>(ifEmpty: K) => (rightFn: (value: T) => P) => K | P
   filter(fn: (value: T) => boolean): Some<T> | None
   getOrElse<K>(alternative: K): T | K
   toString: () => string
@@ -26,7 +28,7 @@ export function Some<T>(value: T): Some<T> {
     get: () => value,
     map: fn => Option(fn(value)),
     flatMap: fn => fn(value),
-    fold: (_, rightFn) => rightFn(value),
+    fold: () => rightFn => rightFn(value),
     filter: fn => (fn(value) ? Some(value) : None()),
     getOrElse: () => value,
     toString: () => `Some(${value})`,
@@ -41,13 +43,13 @@ export interface None extends Option<never> {
 export function None(): None {
   return {
     type: 'none',
-    isSome: () => false,
-    get: () => {},
+    isSome: returnFalse,
+    get: returnVoid,
     map: None,
     flatMap: None,
-    fold: leftFn => leftFn(),
+    fold: ifEmpty => () => ifEmpty,
     filter: None,
-    getOrElse: alternative => alternative,
+    getOrElse: identity,
     toString: () => 'None',
   }
 }
