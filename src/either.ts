@@ -1,16 +1,15 @@
 import { Option, None } from './option'
-import { returnVoid, wrap } from './utils'
+import { returnVoid } from './utils'
 
 export interface Either<L, R> {
   toString: () => string
-  map: <B>(fn: (value: R) => B) => Either<L, B>
-  leftMap: <B>(fn: (value: L) => B) => Either<B, R>
-  flatMap: <B>(fn: (value: R) => Either<L, B>) => Either<L, B>
+  map: <K>(fn: (value: R) => K) => Either<L, K>
+  leftMap: <K>(fn: (value: L) => K) => Either<K, R>
+  flatMap: <K>(fn: (value: R) => Either<L, K>) => Either<L, K>
   right(): R | void
   left(): L | void
   toOption: () => Option<R>
-  fold: <B>(acc: B) => (fn: (acc: B, value: R) => B) => B
-  foldLeft: <B>(acc: B) => (fn: (acc: B, value: L) => B) => B
+  fold: <K>(leftFn: (left: L) => K) => (rightFn: (right: R) => K) => K
 }
 
 export interface Right<T> extends Either<any, T> {}
@@ -29,8 +28,7 @@ export function Right<T>(val: T): Right<T> {
     right: () => val,
     left: returnVoid,
     toOption: () => Option(val),
-    fold: acc => fn => fn(acc, val),
-    foldLeft: wrap,
+    fold: () => fn => fn(val),
   }
 }
 
@@ -45,7 +43,6 @@ export function Left<T>(val: T): Left<T> {
     right: returnVoid,
     left: () => val,
     toOption: None,
-    fold: wrap,
-    foldLeft: acc => fn => fn(acc, val),
+    fold: fn => () => fn(val),
   }
 }

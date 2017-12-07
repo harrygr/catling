@@ -6,7 +6,7 @@ export interface Option<T> {
   get: () => T | void
   map: <K>(fn: (value: T) => K) => Option<K>
   flatMap: <K>(fn: (value: T) => Option<K>) => Option<K>
-  fold: <K, P>(ifEmpty: K) => (rightFn: (value: T) => P) => K | P
+  fold: <K>(leftFn: () => K) => (rightFn: (value: T) => K) => K
   filter: (fn: (value: T) => boolean) => Some<T> | None
   getOrElse: <K>(alternative: K) => T | K
   toString: () => string
@@ -28,7 +28,7 @@ export function Some<T>(value: T): Some<T> {
     get: () => value,
     map: fn => Option(fn(value)),
     flatMap: fn => fn(value),
-    fold: () => rightFn => rightFn(value),
+    fold: () => fn => fn(value),
     filter: fn => (fn(value) ? Some(value) : None()),
     getOrElse: () => value,
     toString: () => `Some(${value})`,
@@ -47,7 +47,7 @@ export function None(): None {
     get: returnVoid,
     map: None,
     flatMap: None,
-    fold: ifEmpty => () => ifEmpty,
+    fold: fn => () => fn(),
     filter: None,
     getOrElse: identity,
     toString: () => 'None',
