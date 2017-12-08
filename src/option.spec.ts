@@ -47,6 +47,10 @@ describe('Option', () => {
 
       expect(option.getOrElse('foo')).toBe('foo')
     })
+
+    it("states that it's a some", () => {
+      expect(Some('foo').isSome()).toBe(true)
+    })
   })
 
   describe('Some', () => {
@@ -93,6 +97,10 @@ describe('Option', () => {
       const option = Some('hello')
 
       expect(option.getOrElse('foo')).toBe('hello')
+    })
+
+    it("states that it's not a some", () => {
+      expect(None().isSome()).toBe(false)
     })
   })
 
