@@ -6,6 +6,7 @@
     "name": "Harry Grumbar",
     "url": "https://github.com/harrygr"
   },
+  "main": "./build/index.js",
   "engineStrict": true,
   "engines": {
     "node": ">= 6.9.0"
@@ -21,8 +22,8 @@
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
-    "build": "tsc -p tsconfig.json",
-    "watch": "tsc -w -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
+    "watch": "tsc -w -p tsconfig.build.json",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -43,6 +44,6 @@
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "testMatch": ["**/*.spec.(ts|tsx|js)"]
+    "testMatch": ["**/*.spec.(ts|tsx)"]
   }
 }
