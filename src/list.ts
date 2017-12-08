@@ -27,4 +27,5 @@ export function List<T>(...items: T[]): List<T> {
     head: () => items[0],
     headOption: () => Option(items[0]),
     tail: () => List(...items.slice(1)),
+  }
 }
