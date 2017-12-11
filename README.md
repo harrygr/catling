@@ -6,6 +6,22 @@ Use monads in your code for functional programming joy.
 
 Catling is influenced by the Scala standard library and [Cats][cats]
 
+## Installation
+
+Install using yarn or npm
+
+yarn:
+
+```
+yarn add catling
+```
+
+npm:
+
+```
+npm install catling --save
+```
+
 ## API
 
 ### Option
