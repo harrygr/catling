@@ -5,6 +5,13 @@ workflows:
   catling-workflow:
     jobs:
       - test
+      - publish:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
 
 jobs:
   test:
@@ -33,3 +40,17 @@ jobs:
           key: yarn-cache-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+
+  publish:
+    docker:
+      - image: node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout:
+          path: ~/repo
+      - attach_workspace:
+          at: ./
+      - run: npm install -g semantic-release
+      - run: semantic-release pre
+      - run: npm publish
+      - run: semantic-release post
