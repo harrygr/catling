@@ -3,6 +3,7 @@ import { returnVoid } from './utils'
 
 export interface Either<L, R> {
   toString: () => string
+  inspect: () => string
   map: <K>(fn: (value: R) => K) => Either<L, K>
   leftMap: <K>(fn: (value: L) => K) => Either<K, R>
   flatMap: <K>(fn: (value: R) => Either<L, K>) => Either<L, K>
@@ -20,8 +21,10 @@ export const Either = {
 }
 
 export function Right<T>(val: T): Right<T> {
+  const inspect = () => `Right(${val})`
   return {
-    toString: () => `Right(${val})`,
+    toString: inspect,
+    inspect,
     map: fn => Right(fn(val)),
     leftMap: () => Right(val),
     flatMap: fn => fn(val),
@@ -35,8 +38,10 @@ export function Right<T>(val: T): Right<T> {
 export interface Left<T> extends Either<T, any> {}
 
 export function Left<T>(val: T): Left<T> {
+  const inspect = () => `Left(${val})`
   return {
-    toString: () => `Left(${val})`,
+    toString: inspect,
+    inspect,
     map: () => Left(val),
     leftMap: fn => Left(fn(val)),
     flatMap: () => Left(val),

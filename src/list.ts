@@ -3,6 +3,7 @@ import { Option } from './option'
 export interface List<T> {
   toArray: () => T[]
   toString: () => string
+  inspect: () => string
   map: <K>(fn: (item: T) => K) => List<K>
   filter: (fn: (el: T) => boolean) => List<T>
   length: () => number
@@ -15,9 +16,11 @@ export interface List<T> {
 }
 
 export function List<T>(...items: T[]): List<T> {
+  const inspect = () => `List(${items})`
   return {
     toArray: () => items,
-    toString: () => `List(${items})`,
+    toString: inspect,
+    inspect,
     map: fn => List(...items.map(fn)),
     filter: fn => List(...items.filter(fn)),
     length: () => items.length,

@@ -10,6 +10,7 @@ export interface Option<T> {
   filter: (fn: (value: T) => boolean) => Option<T>
   getOrElse: <K>(alternative: K) => T | K
   toString: () => string
+  inspect: () => string
 }
 
 export function Option<T>(value: T): Option<T> {
@@ -22,6 +23,7 @@ export interface Some<T> extends Option<T> {
 }
 
 export function Some<T>(value: T): Some<T> {
+  const inspect = () => `Some(${value})`
   return {
     type: 'some',
     isSome: () => true,
@@ -31,7 +33,8 @@ export function Some<T>(value: T): Some<T> {
     fold: () => fn => fn(value),
     filter: fn => (fn(value) ? Some(value) : None()),
     getOrElse: () => value,
-    toString: () => `Some(${value})`,
+    toString: inspect,
+    inspect,
   }
 }
 
@@ -41,6 +44,7 @@ export interface None extends Option<never> {
 }
 
 export function None(): None {
+  const inspect = () => 'None'
   return {
     type: 'none',
     isSome: returnFalse,
@@ -50,7 +54,8 @@ export function None(): None {
     fold: fn => () => fn(),
     filter: None,
     getOrElse: identity,
-    toString: () => 'None',
+    toString: inspect,
+    inspect,
   }
 }
 
