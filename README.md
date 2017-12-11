@@ -1,5 +1,7 @@
 # Catling 🔫🐈
 
+[![CircleCI](https://circleci.com/gh/harrygr/catling.svg?style=svg)](https://circleci.com/gh/harrygr/catling) [![npm](https://img.shields.io/npm/v/catling.svg)](https://www.npmjs.com/package/catling)
+
 A monad library in TypeScript
 
 Use monads in your code for functional programming joy.
