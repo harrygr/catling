@@ -1,6 +1,6 @@
 {
   "name": "catling",
-  "version": "0.0.1",
+  "version": "0.0.1-semantically-versioned",
   "description": "A monad library in TypeScript",
   "author": {
     "name": "Harry Grumbar",
@@ -10,6 +10,10 @@
   "engineStrict": true,
   "engines": {
     "node": ">= 6.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/harrygr/catling"
   },
   "devDependencies": {
     "@types/jest": "~20.0.4",
@@ -45,5 +49,10 @@
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testMatch": ["**/*.spec.(ts|tsx)"]
+  },
+  "release": {
+    "verifyConditions": {
+      "path": "./verifyConditions.js"
+    }
   }
 }
