@@ -29,7 +29,8 @@
     "build": "tsc -p tsconfig.build.json",
     "watch": "tsc -w -p tsconfig.build.json",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "license": "MIT",
   "dependencies": {

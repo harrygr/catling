@@ -51,6 +51,4 @@ jobs:
       - attach_workspace:
           at: ./
       - run: npm install -g semantic-release
-      - run: semantic-release pre
-      - run: npm publish
-      - run: semantic-release post
+      - run: yarn semantic-release || true
