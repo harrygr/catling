@@ -1,7 +1,7 @@
 {
   "name": "catling",
   "version": "0.0.1-semantically-versioned",
-  "description": "A monad library in TypeScript",
+  "description": "Monadic types for JavaScript and TypeScript",
   "author": {
     "name": "Harry Grumbar",
     "url": "https://github.com/harrygr"
