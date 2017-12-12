@@ -23,7 +23,7 @@ export interface Some<T> extends Option<T> {
 }
 
 export function Some<T>(value: T): Some<T> {
-  const inspect = () => `Some(${value})`
+  const inspect = () => `Some(${JSON.stringify(value)})`
   return {
     type: 'some',
     isSome: () => true,

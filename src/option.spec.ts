@@ -55,7 +55,8 @@ describe('Option', () => {
 
   describe('Some', () => {
     it('gets a string representation of itself', () => {
-      expect(`${Some('foo')}`).toBe('Some(foo)')
+      expect(`${Some('foo')}`).toBe('Some("foo")')
+      expect(`${Some(5)}`).toBe('Some(5)')
     })
 
     it('asserts it is a some', () => {

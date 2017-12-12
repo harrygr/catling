@@ -2,6 +2,11 @@ import { Left, Right } from './either'
 
 describe('Either', () => {
   describe('Right', () => {
+    it('gets a string representation of itself', () => {
+      expect(Right('foo').toString()).toBe('Right("foo")')
+      expect(Right(7).toString()).toBe('Right(7)')
+    })
+
     it('it constructs a Right', () => {
       const either = Right('foo')
       expect(either.right()).toBe('foo')
@@ -32,7 +37,7 @@ describe('Either', () => {
   describe('Left', () => {
     it('it constructs a Left', () => {
       const either = Left('gah')
-      expect(`${either}`).toBe('Left(gah)')
+      expect(`${either}`).toBe('Left("gah")')
     })
 
     it('maps over a left with no effect', () => {

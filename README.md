@@ -38,17 +38,16 @@ const upper = name
   .filter(n => n.length !== 0)
   .map(n => n.toUpperCase())
 
-console.log(upper) // Prints either "Some(jimmy)" or "None"
+console.log(upper) // Prints either "Some("JIMMY")" or "None"
 ```
 
 ### Either
 
 An either represents a value consisting of one of two possible types.
-It's typically used to represent the result of something that may have an error case.
+It's typically used to represent the result of something that may fail. Eithers are right-biased.
 
 ```typescript
-
-function divide(n: number, divisor: number): Either<string, number> {
+function divide(divisor: number, n: number): Either<string, number> {
   if (divisor === 0) {
     return Left('Cannot divide by zero')
   } else {
@@ -56,15 +55,19 @@ function divide(n: number, divisor: number): Either<string, number> {
   }
 }
 
-const myNum1 = divide(10, 5)
+const myNum1 = divide(5, 10)
 .map(n => n + 20)
 
 console.log(myNum1) // Prints "Right(22)"
 
-const myNum2 = divide(10, 0)
+const myNum2 = divide(0, 10)
 .map(n => n + 20)
 
-console.log(myNum2) // Prints "Left(Cannot divide by zero)"
+console.log(myNum2) // Prints "Left("Cannot divide by zero")"
 ```
+
+### Immutable List
+
+Docs to come
 
 [cats]: https://github.com/typelevel/cats

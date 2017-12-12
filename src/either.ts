@@ -21,7 +21,7 @@ export const Either = {
 }
 
 export function Right<T>(val: T): Right<T> {
-  const inspect = () => `Right(${val})`
+  const inspect = () => `Right(${JSON.stringify(val)})`
   return {
     toString: inspect,
     inspect,
@@ -38,7 +38,7 @@ export function Right<T>(val: T): Right<T> {
 export interface Left<T> extends Either<T, any> {}
 
 export function Left<T>(val: T): Left<T> {
-  const inspect = () => `Left(${val})`
+  const inspect = () => `Left(${JSON.stringify(val)})`
   return {
     toString: inspect,
     inspect,
