@@ -34,7 +34,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "tslib": "~1.7.1"
+
   },
   "prettier": {
     "tabWidth": 2,
