@@ -1,13 +1,13 @@
 import { Option } from './option'
+import { Monoid } from './types'
 
-export interface List<T> {
+export interface List<T> extends Monoid<List<T>> {
   toArray: () => T[]
   toString: () => string
   inspect: () => string
   map: <K>(fn: (item: T) => K) => List<K>
   filter: (fn: (el: T) => boolean) => List<T>
   length: () => number
-  concat: (list2: List<T>) => List<T>
   flatMap: <K>(fn: (item: T) => List<K>) => List<K>
   fold: <K>(initial: K) => (fn: (acc: K, el: T) => K) => K
   head: () => T | undefined
@@ -30,5 +30,6 @@ export function List<T>(...items: T[]): List<T> {
     head: () => items[0],
     headOption: () => Option(items[0]),
     tail: () => List(...items.slice(1)),
+    empty: () => List(),
   }
 }
