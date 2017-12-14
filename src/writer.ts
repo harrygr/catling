@@ -1,50 +1,50 @@
 import { Monoid } from './types'
 
-export interface Writer<W extends any, A> {
-  value: () => A
-  written: () => W
-  run: () => [W, A]
-  map: <K>(fn: (value: A) => K) => Writer<W, K>
-  flatMap: <K>(fn: (value: A) => Writer<W, K>) => Writer<W, K>
-  bimap: <W1 extends Monoid<any>, A1>(fn1: (w: W) => W1, fn2: (a: A) => A1) => Writer<W1, A1>
-  mapBoth: <W1 extends Monoid<any>, A1>(fn: (w: W, a: A) => [W1, A1]) => Writer<W1, A1>
-  reset: () => Writer<W, A>
-  swap: <V1 extends (val: A) => any>(fn: V1) => Writer<Monoid<A>, W> // This doesn't work too well in typescript because we can't infer the new
-  mapWritten: <K extends Monoid<any>>(fn: (writer: W) => K) => Writer<K, A>
+export interface Writer<L extends any, V> {
+  value: () => V
+  written: () => L
+  run: () => [L, V]
+  map: <V1>(fn: (value: V) => V1) => Writer<L, V1>
+  flatMap: <W1>(fn: (value: V) => Writer<L, W1>) => Writer<L, W1>
+  bimap: <W1 extends Monoid<any>, V1>(fn1: (log: L) => W1, fn2: (value: V) => V1) => Writer<W1, V1>
+  mapBoth: <L1 extends Monoid<any>, V1>(fn: (log: L, value: V) => [L1, V1]) => Writer<L1, V1>
+  reset: () => Writer<L, V>
+  swap: <V1 extends (value: V) => any>(fn: V1) => Writer<Monoid<V>, L> // This doesn't work too well in typescript because we can't infer the new
+  mapWritten: <K extends Monoid<any>>(fn: (log: L) => K) => Writer<K, V>
 }
 
-export function Writer<W extends Monoid<any>, A>(writer: W, value: A): Writer<W, A> {
+export function Writer<W extends Monoid<any>, A>(log: W, value: A): Writer<W, A> {
   return {
     value: () => value,
-    written: () => writer,
-    run: () => [writer, value],
+    written: () => log,
+    run: () => [log, value],
     map: fn => {
-      const val = fn(value)
-      return Writer<W, typeof val>(writer, val)
+      const nValue = fn(value)
+      return Writer<W, typeof nValue>(log, nValue)
     },
     flatMap: fn => {
       const nWriter = fn(value)
-      const nVal = nWriter.value()
-      const nLeft = writer.concat(nWriter.written())
-      return Writer<W, typeof nVal>(nLeft, nWriter.value())
+      const nValue = nWriter.value()
+      const nLog = log.concat(nWriter.written())
+      return Writer<W, typeof nValue>(nLog, nWriter.value())
     },
     bimap: (fn1, fn2) => {
-      const nVal = fn2(value)
-      const nLeft = fn1(writer)
-      return Writer<typeof nLeft, typeof nVal>(nLeft, nVal)
+      const nValue = fn2(value)
+      const nLog = fn1(log)
+      return Writer<typeof nLog, typeof nValue>(nLog, nValue)
     },
     mapBoth: fn => {
-      const [nLeft, nVal] = fn(writer, value)
-      return Writer<typeof nLeft, typeof nVal>(nLeft, nVal)
+      const [nLog, nValue] = fn(log, value)
+      return Writer<typeof nLog, typeof nValue>(nLog, nValue)
     },
-    reset: () => Writer<W, A>(writer.empty() as W, value),
+    reset: () => Writer<W, A>(log.empty() as W, value),
     swap: fn => {
-      const nLeft = fn(value)
-      return Writer<typeof nLeft, W>(nLeft, writer)
+      const nLog = fn(value)
+      return Writer<typeof nLog, W>(nLog, log)
     },
     mapWritten: fn => {
-      const left = fn(writer)
-      return Writer<typeof left, A>(left, value)
+      const nLog = fn(log)
+      return Writer<typeof nLog, A>(nLog, value)
     },
   }
 }
