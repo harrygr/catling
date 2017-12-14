@@ -67,3 +67,34 @@ describe('Writer', () => {
     expect(writer.value()).toBe(2700)
   })
 })
+
+describe('using a writer in async environment', () => {
+  doSlowly(() => 1).then(n => doSlowly(() => n + 1))
+
+  doSlowly(() => doSlowly(() => doSlowly(() => 1)))
+
+  function doSlowly<T>(fn: () => T) {
+    return new Promise<T>(res => {
+      setTimeout(res, 0)
+    }).then(fn)
+  }
+
+  async function factAsyc(n: number): Promise<Writer<List<string>, number>> {
+    if (n === 0) {
+      return Writer(List(), 1)
+    } else {
+      return await doSlowly(async () =>
+        (await factAsyc(n - 1)).flatMap(v => {
+          const ans = v * n
+          return Writer(List(`fact ${n} ${ans}`), ans)
+        }),
+      )
+    }
+  }
+
+  it('does async stuff', async () => {
+    const r = await Promise.all([factAsyc(3), factAsyc(5), factAsyc(4)])
+    // console.log(r)
+    return r
+  })
+})
