@@ -30,7 +30,7 @@ describe('List', () => {
   it('concats 2 lists', () => {
     expect(
       List(1, 2)
-        .concat(List(3, 4))
+        .combine(List(3, 4))
         .toArray(),
     ).toEqual([1, 2, 3, 4])
   })
