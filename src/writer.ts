@@ -25,7 +25,7 @@ export function Writer<W extends Monoid<any>, A>(log: W, value: A): Writer<W, A>
     flatMap: fn => {
       const nWriter = fn(value)
       const nValue = nWriter.value()
-      const nLog = log.concat(nWriter.written())
+      const nLog = log.combine(nWriter.written())
       return Writer<W, typeof nValue>(nLog, nWriter.value())
     },
     bimap: (fn1, fn2) => {

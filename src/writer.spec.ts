@@ -34,11 +34,11 @@ describe('Writer', () => {
   it('swaps the writer using swap', () => {
     const writer = Writer(List('a'), 1)
     const writer2 = writer.swap(value => List(value))
-    expect(writer2.written().concat).toBeDefined()
+    expect(writer2.written().combine).toBeDefined()
   })
   it('maps the writer using mapWritten', () => {
     const writer = Writer(List('a'), 1)
-    const writer2 = writer.mapWritten(w => w.concat(List('b')))
+    const writer2 = writer.mapWritten(w => w.combine(List('b')))
     expect(
       writer2
         .written()
