@@ -7,6 +7,15 @@ describe('Option', () => {
     expect(option.type).toBe('none')
   })
 
+  it('casts a non-null argument to a some of itself', () => {
+    function castToOption(arg: string | null | undefined) {
+      const result = Option(arg).map(s => s.length)
+      return result
+    }
+
+    expect(castToOption('foo').get()).toBe(3)
+  })
+
   it('constructs a Some from a value', () => {
     const option = Option('hello, world')
     expect(option.type).toBe('some')

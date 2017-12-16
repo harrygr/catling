@@ -13,7 +13,7 @@ export interface Option<T> {
   inspect: () => string
 }
 
-export function Option<T>(value: T): Option<T> {
+export function Option<T>(value: T | null | undefined): Option<T> {
   return value === null || value === undefined ? None() : Some(value)
 }
 
