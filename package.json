@@ -7,6 +7,7 @@
     "url": "https://github.com/harrygr"
   },
   "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "engineStrict": true,
   "engines": {
     "node": ">= 6.9.0"
