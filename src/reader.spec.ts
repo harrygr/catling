@@ -1,11 +1,15 @@
 import { Reader } from './reader'
 
-describe('Reader', () => {
+type Cat = {
+  name: string,
+  favoriteFood: string,
+}
 
-  type Cat = {
-    name: string,
-    favoriteFood: string,
-  }
+type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night'
+type Language = 'english' | 'portuguese'
+type Store = Record<Language,Record<TimeOfDay,string>>
+
+describe('Reader', () => {
 
   const garfield = {
     name: 'Garfield',
@@ -15,7 +19,7 @@ describe('Reader', () => {
   const catName: Reader<Cat, string> = Reader(cat => cat.name)
   const greetCat: Reader<Cat, string> = catName.map(name => `Hello ${name}`)
   const isGarfield: Reader<Cat, boolean> = catName.map(name => name === 'Garfield')
-  const catFavoriteFood: Reader<Cat, string> = catName.flatMap(name => Reader(cat => `${name}'s food is ${cat.favoriteFood}`))
+  const catFavoriteFood: Reader<Cat, string> = catName.flatMap(name => Reader(cat => `${name}'s favorite food is ${cat.favoriteFood}`))
 
   it('executes run with a single reader', () => {
     expect(catName.run(garfield)).toBe('Garfield')
@@ -30,61 +34,45 @@ describe('Reader', () => {
   })
 
   it('has a flatmap method', () => {
-    expect(catFavoriteFood.run(garfield)).toBe('Garfield\'s food is Lasagna')
+    expect(catFavoriteFood.run(garfield)).toBe('Garfield\'s favorite food is Lasagna')
   })
 })
 
 describe('Reader example', () => {
 
-  type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night'
-  type Language = 'english' | 'portuguese'
-  type User = {
-    name: string,
-    language: Language
+  const store = {
+    english: {
+      morning: 'Good morning',
+      afternoon: 'Good afternoon',
+      evening: 'Good evening',
+      night: 'Good night',
+    },
+    portuguese: {
+      morning: 'Bom dia',
+      afternoon: 'Boa tarde',
+      evening: 'Boa tarde',
+      night: 'Boa noite',
+    }
   }
 
-  const englishGreetings: Record<TimeOfDay, string> = {
-    morning: 'Good morning',
-    afternoon: 'Good afternoon',
-    evening: 'Good evening',
-    night: 'Good night',
+  function findGreetingsPerLanguage(language: Language): Reader<Store,Record<TimeOfDay,string>> {
+    return Reader(store => store[language])
   }
 
-  const portugueseGreetings: Record<TimeOfDay, string> = {
-    morning: 'Bom dia',
-    afternoon: 'Boa tarde',
-    evening: 'Boa tarde',
-    night: 'Boa noite',
+  function findGreetingForTimeOfDay(language: Language, timeOfDay: TimeOfDay): Reader<Store, string> {
+    return findGreetingsPerLanguage(language).map(timesOfDay => timesOfDay[timeOfDay])
   }
 
-  const greetingNameInLanguage = function(timeOfDay: TimeOfDay): Reader<User, string> {
-    return Reader(user => user.language === 'english' ? englishGreetings[timeOfDay] : portugueseGreetings[timeOfDay])
+  function greetPerson(language: Language, timeOfDay: TimeOfDay, name: string): Reader<Store, string> {
+    return findGreetingForTimeOfDay(language, timeOfDay).map(greeting => `${greeting} ${name}`)
   }
 
-  const capitalize: Reader<User, string> = Reader(user => user.name.charAt(0).toUpperCase() + user.name.slice(1))
-
-  const greetPerson = function (greeting: string): Reader<User, string> {
-    return capitalize.map(capitalizedName => {
-      return `${greeting} ${capitalizedName}`
-    })
-  }
-
-  const greetPersonInLanguage = function(timeOfDay: TimeOfDay) {
-    return greetingNameInLanguage(timeOfDay).flatMap(greetPerson)
-  }
-
-  it('greets person in correct language', () => {
-    expect(greetPersonInLanguage('evening').run({
-      name: "Dan",
-      language: "english"
-    })).toEqual('Good evening Dan')
+  it('greets with correct language and with the correct time of day', () => {
+    expect(findGreetingForTimeOfDay('english', 'morning').run(store)).toEqual('Good morning')
   })
 
-  it('greets person in correct language with fixed capitalization', () => {
-    expect(greetPersonInLanguage('morning').run({
-      name: "mario",
-      language: "portuguese"
-    })).toEqual('Bom dia Mario')
+  it('greets a person with the correct language and with the correct time of day', () => {
+    expect(greetPerson('portuguese', 'afternoon', 'Mario').run(store)).toEqual('Boa tarde Mario')
   })
 
 })
