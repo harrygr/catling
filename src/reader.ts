@@ -1,13 +1,13 @@
 export interface Reader<T, U> {
-  map: <K>(fn: (value: U) => K) =>Reader<T, K>
+  map: <K>(fn: (value: U) => K) => Reader<T, K>
   flatMap: <K>(fn: (value: U) => Reader<T, K>) => Reader<T, K>
-  run:(config: T) => U
+  run: (config: T) => U
 }
 
 export function Reader<T, U>(run: (ctx: T) => U): Reader<T, U> {
   return {
     map: fn => Reader(value => fn(run(value))),
     flatMap: fn => Reader(value => fn(run(value)).run(value)),
-    run: config => run(config)
+    run: config => run(config),
   }
 }
