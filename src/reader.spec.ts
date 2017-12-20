@@ -1,16 +1,17 @@
 import { Reader } from './reader'
+import { Option } from './option'
 
 type Cat = {
-  name: string,
-  favoriteFood: string,
+  name: string
+  favoriteFood: string
 }
 
-type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night'
-type Language = 'english' | 'portuguese'
-type Store = Record<Language,Record<TimeOfDay,string>>
+type Db = {
+  users: Record<string, string>
+  passwords: Record<string, string>
+}
 
 describe('Reader', () => {
-
   const garfield = {
     name: 'Garfield',
     favoriteFood: 'Lasagna',
@@ -19,7 +20,9 @@ describe('Reader', () => {
   const catName: Reader<Cat, string> = Reader(cat => cat.name)
   const greetCat: Reader<Cat, string> = catName.map(name => `Hello ${name}`)
   const isGarfield: Reader<Cat, boolean> = catName.map(name => name === 'Garfield')
-  const catFavoriteFood: Reader<Cat, string> = catName.flatMap(name => Reader(cat => `${name}'s favorite food is ${cat.favoriteFood}`))
+  const catFavoriteFood: Reader<Cat, string> = catName.flatMap(name =>
+    Reader(cat => `${name}'s favorite food is ${cat.favoriteFood}`),
+  )
 
   it('executes run with a single reader', () => {
     expect(catName.run(garfield)).toBe('Garfield')
@@ -34,45 +37,70 @@ describe('Reader', () => {
   })
 
   it('has a flatmap method', () => {
-    expect(catFavoriteFood.run(garfield)).toBe('Garfield\'s favorite food is Lasagna')
+    expect(catFavoriteFood.run(garfield)).toBe("Garfield's favorite food is Lasagna")
   })
 })
 
 describe('Reader example', () => {
-
-  const store = {
-    english: {
-      morning: 'Good morning',
-      afternoon: 'Good afternoon',
-      evening: 'Good evening',
-      night: 'Good night',
-    },
-    portuguese: {
-      morning: 'Bom dia',
-      afternoon: 'Boa tarde',
-      evening: 'Boa tarde',
-      night: 'Boa noite',
-    }
+  function findUserName(userId: string): Reader<Db, Option<string>> {
+    return Reader(db => Option(db.users[userId]))
   }
 
-  function findGreetingsPerLanguage(language: Language): Reader<Store,Record<TimeOfDay,string>> {
-    return Reader(store => store[language])
+  function checkPassword(username: string, password: string): Reader<Db, boolean> {
+    return Reader(db => db.passwords[username] === password)
   }
 
-  function findGreetingForTimeOfDay(language: Language, timeOfDay: TimeOfDay): Reader<Store, string> {
-    return findGreetingsPerLanguage(language).map(timesOfDay => timesOfDay[timeOfDay])
+  function checkLogin(userId: string, password: string): Reader<Db, boolean> {
+    return findUserName(userId).flatMap(usernameOption => {
+      return usernameOption
+        .map(username => checkPassword(username, password))
+        .getOrElse(Reader(() => false))
+    })
   }
 
-  function greetPerson(language: Language, timeOfDay: TimeOfDay, name: string): Reader<Store, string> {
-    return findGreetingForTimeOfDay(language, timeOfDay).map(greeting => `${greeting} ${name}`)
+  const users = {
+    '1': 'mario',
+    '2': 'link',
+    '3': 'donkey kong',
   }
 
-  it('greets with correct language and with the correct time of day', () => {
-    expect(findGreetingForTimeOfDay('english', 'morning').run(store)).toEqual('Good morning')
+  const passwords = {
+    mario: 'mushroom',
+    link: 'sword',
+    'donkey kong': 'banana',
+  }
+
+  const db = { users, passwords }
+
+  it('finds username', () => {
+    expect(
+      findUserName('1')
+        .run(db)
+        .get(),
+    ).toEqual('mario')
+    expect(
+      findUserName('4')
+        .run(db)
+        .get(),
+    ).toBeUndefined()
   })
 
-  it('greets a person with the correct language and with the correct time of day', () => {
-    expect(greetPerson('portuguese', 'afternoon', 'Mario').run(store)).toEqual('Boa tarde Mario')
+  it('checks password', () => {
+    expect(checkPassword('mario', 'mushroom').run(db)).toBeTruthy()
+    expect(checkPassword('mario', 'something').run(db)).toBeFalsy()
   })
 
+  it('returns true for an existing user', () => {
+    expect(checkLogin('1', 'mushroom').run(db)).toBeTruthy()
+    expect(checkLogin('2', 'sword').run(db)).toBeTruthy()
+    expect(checkLogin('3', 'banana').run(db)).toBeTruthy()
+  })
+
+  it('returns false for a user that does not exist', () => {
+    expect(checkLogin('4', 'something').run(db)).toBeFalsy()
+  })
+
+  it('returns false for a mismatch between user and password', () => {
+    expect(checkLogin('2', 'something').run(db)).toBeFalsy()
+  })
 })
