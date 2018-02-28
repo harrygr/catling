@@ -13,10 +13,6 @@ export interface Option<T> {
   inspect: () => string
 }
 
-export function Option<T>(value: T | null | undefined): Option<T> {
-  return value === null || value === undefined ? None() : Some(value)
-}
-
 export interface Some<T> extends Option<T> {
   type: 'some'
   get: () => T
@@ -59,6 +55,57 @@ export function None(): None {
   }
 }
 
-export function isOption<T>(value: any): value is Option<T> {
+function isDefined<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined
+}
+
+export type MaybeOption<T> = T | Option<T> | null | undefined
+
+export interface OptionFactory {
+  <T>(value: T | null | undefined): Option<T>
+  isOption(value: any): value is Option<{}>
+  all<T1>(options: [MaybeOption<T1>]): Option<[T1]>
+  all<T1, T2>(options: [MaybeOption<T1>, MaybeOption<T2>]): Option<[T1, T2]>
+  all<T1, T2, T3>(
+    options: [MaybeOption<T1>, MaybeOption<T2>, MaybeOption<T3>],
+  ): Option<[T1, T2, T3]>
+  all<T1, T2, T3, T4>(
+    options: [MaybeOption<T1>, MaybeOption<T2>, MaybeOption<T3>, MaybeOption<T4>],
+  ): Option<[T1, T2, T3, T4]>
+  all<T1, T2, T3, T4, T5>(
+    options: [MaybeOption<T1>, MaybeOption<T2>, MaybeOption<T3>, MaybeOption<T4>, MaybeOption<T5>],
+  ): Option<[T1, T2, T3, T4, T5]>
+  all<T1, T2, T3, T4, T5, T6>(
+    options: [
+      MaybeOption<T1>,
+      MaybeOption<T2>,
+      MaybeOption<T3>,
+      MaybeOption<T4>,
+      MaybeOption<T5>,
+      MaybeOption<T6>
+    ],
+  ): Option<[T1, T2, T3, T4, T5, T6]>
+  all<T1, T2, T3, T4, T5, T6, T7>(
+    options: [T1, T2, T3, T4, T5, T6, T7],
+  ): Option<[T1, T2, T3, T4, T5, T6, T7]>
+
+  all<T>(options: T[]): Option<T[]>
+}
+
+const OptionFactory = (<T>(value: T | null | undefined): Option<T> => {
+  return isDefined(value) ? Some(value) : None()
+}) as OptionFactory
+
+function isOption(value: any): value is Option<{}> {
   return value && (value.type === 'some' || value.type === 'none')
 }
+
+OptionFactory.isOption = isOption
+
+OptionFactory.all = (things: any[]): any => {
+  const values = things.map(thing => (isOption(thing) ? thing.get() : thing))
+
+  return values.every(isDefined) ? Some(values) : None()
+}
+
+export const Option = OptionFactory
