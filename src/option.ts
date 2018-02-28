@@ -86,10 +86,18 @@ export interface OptionFactory {
     ],
   ): Option<[T1, T2, T3, T4, T5, T6]>
   all<T1, T2, T3, T4, T5, T6, T7>(
-    options: [T1, T2, T3, T4, T5, T6, T7],
+    options: [
+      MaybeOption<T1>,
+      MaybeOption<T2>,
+      MaybeOption<T3>,
+      MaybeOption<T4>,
+      MaybeOption<T5>,
+      MaybeOption<T6>,
+      MaybeOption<T7>
+    ],
   ): Option<[T1, T2, T3, T4, T5, T6, T7]>
 
-  all<T>(options: T[]): Option<T[]>
+  all<T>(options: MaybeOption<T>[]): Option<T[]>
 }
 
 const OptionFactory = (<T>(value: T | null | undefined): Option<T> => {
