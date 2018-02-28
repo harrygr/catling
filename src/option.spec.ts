@@ -1,4 +1,4 @@
-import { Option, Some, None, isOption } from './option'
+import { Option, Some, None } from './option'
 
 describe('Option', () => {
   it('constructs a None from a null or undefined value', () => {
@@ -116,10 +116,25 @@ describe('Option', () => {
 
   describe('utils', () => {
     it('asserts if a value is an Option', () => {
-      expect(isOption(None())).toBe(true)
-      expect(isOption(Some('foo'))).toBe(true)
-      expect(isOption('foo')).toBe(false)
-      expect(isOption({ foo: 'bar' })).toBe(false)
+      expect(Option.isOption(None())).toBe(true)
+      expect(Option.isOption(Some('foo'))).toBe(true)
+      expect(Option.isOption('foo')).toBe(false)
+      expect(Option.isOption({ foo: 'bar' })).toBe(false)
+    })
+
+    it('returns a single option for checking several options', () => {
+      expect(Option.all([Some('foo'), Some('bar')]).get()).toEqual(['foo', 'bar'])
+      expect(Option.all([Some('foo'), Some(1)]).get()).toEqual(['foo', 1])
+
+      expect(Option.all([Some('foo'), None()]).isSome()).toBe(false)
+
+      const f = Option.all([Some('foo'), null, Some('bar'), Some(55)])
+      expect(f.isSome()).toBe(false)
+    })
+
+    it('coerces a list of values into an option of that list', () => {
+      expect(Option.all([1, 2, 3, 4, 5]).get()).toEqual([1, 2, 3, 4, 5])
+      expect(Option.all([1, 2, 3, null, 5]).isSome()).toBe(false)
     })
   })
 })
