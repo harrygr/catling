@@ -50,5 +50,5 @@ jobs:
           path: ~/repo
       - attach_workspace:
           at: ./
-      - run: npm install -g semantic-release
+      - run: npm install -g semantic-release@8.2.0
       - run: yarn semantic-release || true
