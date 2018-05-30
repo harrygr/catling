@@ -12,6 +12,11 @@ workflows:
             branches:
               only:
                 - master
+      - docs:
+          filters:
+            branches:
+              only:
+                - master
 
 jobs:
   test:
@@ -52,3 +57,12 @@ jobs:
           at: ./
       - run: npm install -g semantic-release@8.2.0
       - run: yarn semantic-release || true
+
+  docs:
+    docker:
+     - image: node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout:
+          path: ~/repo
+      - run: yarn docs
