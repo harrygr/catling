@@ -13,6 +13,8 @@ export interface List<T> extends Monoid<List<T>> {
   head: () => T | undefined
   headOption: () => Option<T>
   tail: () => List<T>
+  find: (p: (item: T) => boolean) => Option<T>
+  contains: (p: (item: T) => boolean) => boolean
 }
 
 export function List<T>(...items: T[]): List<T> {
@@ -31,5 +33,7 @@ export function List<T>(...items: T[]): List<T> {
     headOption: () => Option(items[0]),
     tail: () => List(...items.slice(1)),
     empty: () => List(),
+    find: p => Option(items.reduce((acc, curr) => (acc ? acc : p(curr) ? curr : acc), undefined)),
+    contains: p => items.reduce((acc, curr) => (acc ? acc : p(curr)), false),
   }
 }

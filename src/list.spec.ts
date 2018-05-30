@@ -72,4 +72,23 @@ describe('List', () => {
         .toArray(),
     ).toEqual([2, 3])
   })
+
+  it('finds the first element in a list for a predicate', () => {
+    const myList = List(1, 2, 3, 5)
+
+    expect(myList.find(v => v > 2).get()).toBe(3)
+  })
+
+  it("Returns a None for when finding an element that doesn't exist", () => {
+    const myList = List(1, 2, 3, 5)
+
+    expect(myList.find(v => v > 10).isSome()).toBe(false)
+  })
+
+  it('Checks of an element exists in the list according to a predicate', () => {
+    const myList = List(1, 2, 3, 4)
+
+    expect(myList.contains(v => v > 3)).toBe(true)
+    expect(myList.contains(v => v > 10)).toBe(false)
+  })
 })
