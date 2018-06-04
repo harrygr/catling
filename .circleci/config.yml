@@ -35,7 +35,8 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            -  build
+            - build
+            - node_modules
       - save_cache:
           key: yarn-cache-{{ checksum "yarn.lock" }}
           paths:
@@ -50,5 +51,4 @@ jobs:
           path: ~/repo
       - attach_workspace:
           at: ./
-      - run: npm install -g semantic-release@8.2.0
       - run: yarn semantic-release || true

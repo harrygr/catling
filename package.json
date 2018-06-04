@@ -1,6 +1,6 @@
 {
   "name": "catling",
-  "version": "0.0.1-semantically-versioned",
+  "version": "0.0.0-development",
   "description": "Monadic types for JavaScript and TypeScript",
   "author": {
     "name": "Harry Grumbar",
@@ -21,9 +21,10 @@
     "@types/node": "~6.0.85",
     "jest": "~20.0.0",
     "rimraf": "~2.6.1",
+    "semantic-release": "^15.5.0",
+    "ts-jest": "^20.0.10",
     "tsutils": "~2.7.1",
-    "typescript": "~2.4.2",
-    "ts-jest": "^20.0.10"
+    "typescript": "~2.4.2"
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
@@ -31,12 +32,10 @@
     "watch": "tsc -w -p tsconfig.build.json",
     "test": "jest",
     "test:watch": "jest --watch",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release"
   },
   "license": "MIT",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "prettier": {
     "tabWidth": 2,
     "semi": false,
@@ -46,15 +45,16 @@
     "parser": "typescript"
   },
   "jest": {
-    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "testMatch": ["**/*.spec.(ts|tsx)"]
-  },
-  "release": {
-    "verifyConditions": {
-      "path": "./verifyConditions.js"
-    }
+    "testMatch": [
+      "**/*.spec.(ts|tsx)"
+    ]
   }
 }
