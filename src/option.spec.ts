@@ -60,6 +60,12 @@ describe('Option', () => {
     it("states that it's a some", () => {
       expect(Some('foo').isSome()).toBe(true)
     })
+
+    it('implements a forEach method', () => {
+      const sideEffect = jest.fn()
+      None().forEach(sideEffect)
+      expect(sideEffect).not.toBeCalledWith('foo')
+    })
   })
 
   describe('Some', () => {
@@ -111,6 +117,12 @@ describe('Option', () => {
 
     it("states that it's not a some", () => {
       expect(None().isSome()).toBe(false)
+    })
+
+    it('implements a forEach method', () => {
+      const sideEffect = jest.fn()
+      Some('foo').forEach(sideEffect)
+      expect(sideEffect).toBeCalledWith('foo')
     })
   })
 
