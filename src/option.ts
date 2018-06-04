@@ -11,6 +11,7 @@ export interface Option<T> {
   getOrElse: <K>(alternative: K) => T | K
   toString: () => string
   inspect: () => string
+  forEach: (fn: (value: T) => any) => void
 }
 
 export interface Some<T> extends Option<T> {
@@ -31,6 +32,9 @@ export function Some<T>(value: T): Some<T> {
     getOrElse: () => value,
     toString: inspect,
     inspect,
+    forEach: fn => {
+      fn(value)
+    },
   }
 }
 
@@ -52,6 +56,7 @@ export function None(): None {
     getOrElse: identity,
     toString: inspect,
     inspect,
+    forEach: returnVoid,
   }
 }
 
