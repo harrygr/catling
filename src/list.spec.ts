@@ -91,4 +91,17 @@ describe('List', () => {
     expect(myList.contains(v => v > 3)).toBe(true)
     expect(myList.contains(v => v > 10)).toBe(false)
   })
+
+  it('chains according to the fantasyland spec (associativity)', () => {
+    const myList = List(1, 2, 3, 4)
+    const repeat = (n: number) => List(n, n)
+    const add1 = (n: number) => List(n + 1)
+
+    expect(
+      myList
+        .chain(repeat)
+        .chain(add1)
+        .toArray(),
+    ).toEqual(myList.chain(x => repeat(x).chain(add1)).toArray())
+  })
 })

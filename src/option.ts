@@ -6,6 +6,7 @@ export interface Option<T> {
   get: () => T | void
   map: <K>(fn: (value: T) => K) => Option<K>
   flatMap: <K>(fn: (value: T) => Option<K>) => Option<K>
+  chain: <K>(fn: (value: T) => Option<K>) => Option<K>
   fold: <K>(leftFn: () => K) => (rightFn: (value: T) => K) => K
   filter: (fn: (value: T) => boolean) => Option<T>
   getOrElse: <K>(alternative: K) => T | K
@@ -21,12 +22,15 @@ export interface Some<T> extends Option<T> {
 
 export function Some<T>(value: T): Some<T> {
   const inspect = () => `Some(${JSON.stringify(value)})`
+  const flatMap = fn => fn(value)
+
   return {
     type: 'some',
     isSome: () => true,
     get: () => value,
     map: fn => Option(fn(value)),
-    flatMap: fn => fn(value),
+    flatMap,
+    chain: flatMap,
     fold: () => fn => fn(value),
     filter: fn => (fn(value) ? Some(value) : None()),
     getOrElse: () => value,
@@ -51,6 +55,7 @@ export function None(): None {
     get: returnVoid,
     map: None,
     flatMap: None,
+    chain: None,
     fold: fn => () => fn(),
     filter: None,
     getOrElse: identity,

@@ -9,6 +9,7 @@ export interface List<T> extends Monoid<List<T>> {
   filter: (fn: (el: T) => boolean) => List<T>
   length: () => number
   flatMap: <K>(fn: (item: T) => List<K>) => List<K>
+  chain: <K>(fn: (item: T) => List<K>) => List<K>
   fold: <K>(initial: K) => (fn: (acc: K, el: T) => K) => K
   head: () => T | undefined
   headOption: () => Option<T>
@@ -19,6 +20,8 @@ export interface List<T> extends Monoid<List<T>> {
 
 export function List<T>(...items: T[]): List<T> {
   const inspect = () => `List(${items})`
+  const flatMap = <K>(fn) => List(...items).fold(List<K>())((acc, i) => acc.concat(fn(i)))
+
   return {
     toArray: () => items,
     toString: inspect,
@@ -27,7 +30,8 @@ export function List<T>(...items: T[]): List<T> {
     filter: fn => List(...items.filter(fn)),
     length: () => items.length,
     concat: list2 => List(...items, ...list2.toArray()),
-    flatMap: <K>(fn) => List(...items).fold(List<K>())((acc, i) => acc.concat(fn(i))),
+    flatMap,
+    chain: flatMap,
     fold: initial => fn => items.reduce(fn, initial),
     head: () => items[0],
     headOption: () => Option(items[0]),
