@@ -13,8 +13,8 @@ describe('Either', () => {
     })
 
     it('maps over a right', () => {
-      const right = Right('foo').map(s => s.length)
-      expect(right.right()).toBe(3)
+      const either = Right('foo').map(s => s.length)
+      expect(either.right()).toBe(3)
     })
 
     it('flatMaps over its value', () => {
@@ -24,8 +24,8 @@ describe('Either', () => {
     })
 
     it('left maps over a right with no effect', () => {
-      const right = Right('foo').leftMap(s => s.length)
-      expect(right.right()).toBe('foo')
+      const either = Right('foo').leftMap(s => s.length)
+      expect(either.right()).toBe('foo')
     })
 
     it('folds over the value', () => {
@@ -41,8 +41,8 @@ describe('Either', () => {
     })
 
     it('maps over a left with no effect', () => {
-      const right = Left('foo').map(s => s.length)
-      expect(right.left()).toBe('foo')
+      const either = Left('foo').map(s => s.length)
+      expect(either.left()).toBe('foo')
     })
 
     it('flatMaps over a left with no effect', () => {
@@ -52,8 +52,8 @@ describe('Either', () => {
     })
 
     it('leftMaps over a left', () => {
-      const left = Left('gah').leftMap(s => s.length)
-      expect(left.left()).toBe(3)
+      const either = Left('gah').leftMap(s => s.length)
+      expect(either.left()).toBe(3)
     })
 
     it('folds over the value', () => {
