@@ -6,6 +6,7 @@ export interface Writer<W extends Semigroup<W>, T> {
   written: () => W
   inspect: () => string
   flatMap: <K>(fn: (val: T) => Writer<W, K>) => Writer<W, K>
+  chain: <K>(fn: (val: T) => Writer<W, K>) => Writer<W, K>
   map: <K>(fn: (val: T) => K) => Writer<W, K>
   // bit of a hack as TS can't seem to infer the returned log type
   mapWritten: <L extends Semigroup<any>>(fn: (log: W) => L) => Writer<L, T>
@@ -14,15 +15,17 @@ export interface Writer<W extends Semigroup<W>, T> {
 }
 
 export function Writer<W extends Semigroup<W>, T>(log: W, val: T): Writer<W, T> {
+  const flatMap = fn => {
+    const w = fn(val)
+    return Writer(log.concat(w.written()), w.value())
+  }
   return {
     inspect: () => `Writer(${log},${val})`,
     run: () => [log, val],
     value: () => val,
     written: () => log,
-    flatMap: fn => {
-      const w = fn(val)
-      return Writer(log.concat(w.written()), w.value())
-    },
+    flatMap,
+    chain: flatMap,
     map: fn => Writer(log, fn(val)),
     mapWritten: fn => Writer(fn(log), val),
     bimap: (logFn, valFn) => Writer(logFn(log), valFn(val)),

@@ -7,6 +7,7 @@ export interface Either<L, R> {
   map: <K>(fn: (value: R) => K) => Either<L, K>
   leftMap: <K>(fn: (value: L) => K) => Either<K, R>
   flatMap: <K>(fn: (value: R) => Either<L, K>) => Either<L, K>
+  chain: <K>(fn: (value: R) => Either<L, K>) => Either<L, K>
   right(): R | void
   left(): L | void
   toOption: () => Option<R>
@@ -22,12 +23,14 @@ export const Either = {
 
 export function Right<T>(val: T): Right<T> {
   const inspect = () => `Right(${JSON.stringify(val)})`
+  const flatMap = fn => fn(val)
   return {
     toString: inspect,
     inspect,
     map: fn => Right(fn(val)),
     leftMap: () => Right(val),
-    flatMap: fn => fn(val),
+    flatMap,
+    chain: flatMap,
     right: () => val,
     left: returnVoid,
     toOption: () => Option(val),
@@ -39,12 +42,14 @@ export interface Left<T> extends Either<T, any> {}
 
 export function Left<T>(val: T): Left<T> {
   const inspect = () => `Left(${JSON.stringify(val)})`
+  const flatMap = () => Left(val)
   return {
     toString: inspect,
     inspect,
     map: () => Left(val),
     leftMap: fn => Left(fn(val)),
-    flatMap: () => Left(val),
+    flatMap: flatMap,
+    chain: flatMap,
     right: returnVoid,
     left: () => val,
     toOption: None,
