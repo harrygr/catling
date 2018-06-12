@@ -31,7 +31,7 @@ npm install catling --save
 An option is a great way to represent a value which may or may not exist. An option is either a `Some` or a `None`.
 
 ```typescript
-const name: Option<string> = getParameter(request, 'name')
+const name: Option<string> = getParameter(data, 'name')
 
 const upper = name
   .map(trim)
@@ -71,9 +71,12 @@ console.log(myNum2) // Prints "Left("Cannot divide by zero")"
 An immutable list behaves much like the native array, expect it cannot be mutated.
 
 ```typescript
-const myList = List(1,2,3,4).map(double)
+const result = List(1, 2, 4, 5)
+                .map(double)
+                .filter(greaterThan3)
+                .fold(0)(add)
 
-console.log(myList) // List(2,4,6,8)
+console.log(result) // 22
 ```
 
 ### Writer
@@ -81,15 +84,15 @@ console.log(myList) // List(2,4,6,8)
 A writer is a context that carries with it some sort of log with its computation.
 
 ```typescript
-const myWriter =  Writer(List('initial value'), 10)
+const myWriter = Writer(List('initial value'), 10)
                   .flatMap(val => Writer(List('adding 5'), val + 5)
                   .flatMap(val => Writer(List('doubling'), val * 2)
 
 console.log(myWriter) // Writer(List(initial value, adding 5, doubling), 30)
 ```
 
-The log part of the writer must be a semigroup, meaning it must have a `concat` method. This is used to combine the logs from the source writer.
-
+The log part of the writer must be a semigroup according to the [fantasy-land spec][fantasy-land-semigroup], meaning it must have a `concat` method. This is used to combine the logs from the source writer.
 
 
 [cats]: https://github.com/typelevel/cats
+[fantasy-land-semigroup]: https://github.com/fantasyland/fantasy-land#semigroup

@@ -7,7 +7,7 @@ export interface Option<T> {
   map: <K>(fn: (value: T) => K) => Option<K>
   flatMap: <K>(fn: (value: T) => Option<K>) => Option<K>
   chain: <K>(fn: (value: T) => Option<K>) => Option<K>
-  fold: <K>(leftFn: () => K) => (rightFn: (value: T) => K) => K
+  fold: <K>(ifEmpty: () => K) => (fn: (value: T) => K) => K
   filter: (fn: (value: T) => boolean) => Option<T>
   getOrElse: <K>(alternative: K) => T | K
   toString: () => string
