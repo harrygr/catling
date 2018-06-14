@@ -90,10 +90,12 @@ describe('Option', () => {
       expect(result.get()).toBe('foobar')
     })
 
-    it('returns a None if the map method results in undefined or null', () => {
+    it('still returns a Some if the map method results in undefined or null', () => {
+      // This is consistant with the standard libary Scala Option
       const option = Option('hello').map(() => null)
 
-      expect(option.type).toBe('none')
+      expect(option.isSome()).toBe(true)
+      expect(option.get()).toBe(null)
     })
 
     it('implements a fold method', () => {
