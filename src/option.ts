@@ -28,7 +28,7 @@ export function Some<T>(value: T): Some<T> {
     type: 'some',
     isSome: () => true,
     get: () => value,
-    map: fn => Option(fn(value)),
+    map: fn => Some(fn(value)),
     flatMap,
     chain: flatMap,
     fold: () => fn => fn(value),
