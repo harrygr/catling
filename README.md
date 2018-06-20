@@ -1,6 +1,8 @@
 # Catling 🔫🐈
 
-[![CircleCI](https://img.shields.io/circleci/project/github/harrygr/catling.svg?style=flat-square)](https://circleci.com/gh/harrygr/catling) [![npm](https://img.shields.io/npm/v/catling.svg?style=flat-square)](https://www.npmjs.com/package/catling)
+[![CircleCI](https://img.shields.io/circleci/project/github/harrygr/catling.svg?style=flat-square)](https://circleci.com/gh/harrygr/catling) [![npm](https://img.shields.io/npm/v/catling.svg?style=flat-square)](https://www.npmjs.com/package/catling) [![codecov](https://codecov.io/gh/harrygr/catling/branch/master/graph/badge.svg)](https://codecov.io/gh/harrygr/catling)
+
+
 
 A monad library in TypeScript
 
