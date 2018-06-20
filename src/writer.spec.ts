@@ -66,4 +66,10 @@ describe('Writer', () => {
     expect(writer.written()).toEqual(['A', 'B'])
     expect(writer.value()).toBe(2700)
   })
+
+  it('inspects a writer', () => {
+    const writer = Writer('foo', 15)
+
+    expect(writer.inspect()).toBe('Writer(foo,15)')
+  })
 })
