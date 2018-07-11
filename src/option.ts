@@ -1,9 +1,9 @@
-import { returnFalse, returnVoid, identity } from './utils'
+import { F, T, returnVoid, identity, returnUndefined } from './utils'
 
 export interface Option<T> {
   type: 'some' | 'none'
   isSome: () => boolean
-  get: () => T | void
+  get: () => T | undefined
   map: <K>(fn: (value: T) => K) => Option<K>
   flatMap: <K>(fn: (value: T) => Option<K>) => Option<K>
   chain: <K>(fn: (value: T) => Option<K>) => Option<K>
@@ -26,7 +26,7 @@ export function Some<T>(value: T): Some<T> {
 
   return {
     type: 'some',
-    isSome: () => true,
+    isSome: T,
     get: () => value,
     map: fn => Some(fn(value)),
     flatMap,
@@ -44,15 +44,15 @@ export function Some<T>(value: T): Some<T> {
 
 export interface None extends Option<never> {
   type: 'none'
-  get: () => void
+  get: () => undefined
 }
 
 export function None(): None {
   const inspect = () => 'None'
   return {
     type: 'none',
-    isSome: returnFalse,
-    get: returnVoid,
+    isSome: F,
+    get: returnUndefined,
     map: None,
     flatMap: None,
     chain: None,
