@@ -11,7 +11,7 @@ export interface Either<L, R> {
   right(): R | void
   left(): L | void
   toOption: () => Option<R>
-  fold: <K>(leftFn: (left: L) => K) => (rightFn: (right: R) => K) => K
+  fold: <K>(leftFn: (left: L) => K, rightFn: (right: R) => K) => K
 }
 
 export interface Right<T> extends Either<any, T> {}
@@ -34,7 +34,7 @@ export function Right<T>(val: T): Right<T> {
     right: () => val,
     left: returnVoid,
     toOption: () => Option(val),
-    fold: () => fn => fn(val),
+    fold: (_, fn) => fn(val),
   }
 }
 
@@ -53,6 +53,6 @@ export function Left<T>(val: T): Left<T> {
     right: returnVoid,
     left: () => val,
     toOption: None,
-    fold: fn => () => fn(val),
+    fold: fn => fn(val),
   }
 }

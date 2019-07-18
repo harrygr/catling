@@ -29,7 +29,7 @@ describe('Either', () => {
     })
 
     it('folds over the value', () => {
-      const result = Right('foo').fold(e => `failed with ${e}`)(v => `succeeded with ${v}`)
+      const result = Right('foo').fold(e => `failed with ${e}`, v => `succeeded with ${v}`)
       expect(result).toBe('succeeded with foo')
     })
   })
@@ -57,7 +57,7 @@ describe('Either', () => {
     })
 
     it('folds over the value', () => {
-      const result = Left('gah').fold(e => `failed with ${e}`)(v => `succeeded with ${v}`)
+      const result = Left('gah').fold(e => `failed with ${e}`, v => `succeeded with ${v}`)
       expect(result).toBe('failed with gah')
     })
   })

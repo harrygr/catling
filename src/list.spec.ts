@@ -38,7 +38,7 @@ describe('List', () => {
   it('folds a list', () => {
     const myList = List(1, 2, 3)
 
-    expect(myList.fold(0)((acc, el) => el + acc)).toBe(6)
+    expect(myList.fold(0, (acc, el) => el + acc)).toBe(6)
   })
 
   it('flat maps over a list', () => {
