@@ -48,7 +48,7 @@ describe('Option', () => {
     it('implements a fold method', () => {
       const option = None()
 
-      expect(option.fold(() => 'foo')(v => v)).toBe('foo')
+      expect(option.fold(() => 'foo', v => v)).toBe('foo')
     })
 
     it('implements a getOrElse method', () => {
@@ -101,7 +101,7 @@ describe('Option', () => {
     it('implements a fold method', () => {
       const option = Some('hello')
 
-      expect(option.fold(() => 'foo')(v => v)).toBe('hello')
+      expect(option.fold(() => 'foo', v => v)).toBe('hello')
     })
 
     it('implements a filter method', () => {

@@ -7,7 +7,7 @@ export interface Option<T> {
   map: <K>(fn: (value: T) => K) => Option<K>
   flatMap: <K>(fn: (value: T) => Option<K>) => Option<K>
   chain: <K>(fn: (value: T) => Option<K>) => Option<K>
-  fold: <K>(ifEmpty: () => K) => (fn: (value: T) => K) => K
+  fold: <K>(ifEmpty: () => K, fn: (value: T) => K) => K
   filter: (fn: (value: T) => boolean) => Option<T>
   getOrElse: <K>(alternative: K) => T | K
   toString: () => string
@@ -31,7 +31,7 @@ export function Some<T>(value: T): Some<T> {
     map: fn => Some(fn(value)),
     flatMap,
     chain: flatMap,
-    fold: () => fn => fn(value),
+    fold: (_, fn) => fn(value),
     filter: fn => (fn(value) ? Some(value) : None()),
     getOrElse: () => value,
     toString: inspect,
@@ -56,7 +56,7 @@ export function None(): None {
     map: None,
     flatMap: None,
     chain: None,
-    fold: fn => () => fn(),
+    fold: fn => fn(),
     filter: None,
     getOrElse: identity,
     toString: inspect,
