@@ -45,6 +45,71 @@ const upper = name
 console.log(upper) // either "Some("JIMMY")" or "None"
 ```
 
+#### map
+
+Applies the function given to the value if it's a Some, otherwise return None.
+
+```typescript
+const amount = Option(10).map(x => x * 2)
+
+// Some(20)
+```
+
+#### flatMap
+
+Applies the function that maps the value in the Option to a new Option.
+
+```typescript
+const age = Option(people[0])
+  .flatMap(person => Option(person.age))
+
+// Some(20) or None
+```
+
+#### filter
+
+Returns the Option if the predicate returns true, otherwise return a None.
+
+```typescript
+const age1 = Option(16).filter(a => a > 18) // None
+const age2 = Option(21).filter(a => a > 18) // Some(21)
+```
+
+
+#### fold / chain
+
+Applies the first function if the Option is a None, else applies the second function.
+
+```typescript
+const name = Option('Jimmy').fold(
+  () => 'NONAME',
+  n => n.toUpperCase()
+)
+
+// 'JIMMY'
+```
+
+#### get
+
+Returns the value of the Option if it's a Some, otherwise return `undefined`
+
+```typescript
+const name = Option('Jimmy').get()
+
+// 'Jimmy'
+```
+
+#### getOrElse
+
+Returns the value of the Option if it's a Some, otherwise return the alternative.
+
+```typescript
+const name = Option(undefined).getOrElse('Bob')
+
+
+// 'Bob'
+```
+
 ### Either
 
 An either represents a value consisting of one of two possible types.
@@ -82,7 +147,7 @@ import { List } from 'catling'
 const result = List(1, 2, 4, 5)
                 .map(double)
                 .filter(greaterThan3)
-                .fold(0)(add)
+                .fold(0, add)
 
 console.log(result) // 22
 ```
