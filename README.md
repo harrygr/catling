@@ -168,6 +168,13 @@ console.log(myWriter) // Writer(List(initial value, adding 5, doubling), 30)
 
 The log part of the writer must be a semigroup according to the [fantasy-land spec][fantasy-land-semigroup], meaning it must have a `concat` method. This is used to combine the logs from the source writer.
 
+## Developing
+
+```
+yarn
+yarn test # run the tests
+yarn docs # open the docs
+```
 
 [cats]: https://github.com/typelevel/cats
 [fantasy-land-semigroup]: https://github.com/fantasyland/fantasy-land#semigroup

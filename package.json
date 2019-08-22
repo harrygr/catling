@@ -23,15 +23,17 @@
     "rimraf": "~2.6.1",
     "semantic-release": "^15.13.18",
     "ts-jest": "^24.0.2",
+    "typedoc": "^0.15.0",
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.build.json",
-    "watch": "tsc -w -p tsconfig.build.json",
-    "test": "jest",
+    "clean": "rimraf coverage build tmp",
+    "docs": "typedoc src && open docs/index.html",
+    "semantic-release": "semantic-release",
     "test:watch": "jest --watch",
-    "semantic-release": "semantic-release"
+    "test": "jest",
+    "watch": "tsc -w -p tsconfig.build.json"
   },
   "license": "MIT",
   "dependencies": {},
