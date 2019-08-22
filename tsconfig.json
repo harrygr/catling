@@ -19,5 +19,11 @@
   },
   "include": [
     "src/**/*"
-  ]
+  ],
+  "typedocOptions": {
+    "exclude": "**/*+(index|.spec|.e2e).ts",
+    "mode": "modules",
+    "out": "docs",
+    "theme": "minimal"
+  }
 }
