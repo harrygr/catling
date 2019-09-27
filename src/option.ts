@@ -2,17 +2,18 @@ import { F, T, returnVoid, identity, returnUndefined } from './utils'
 
 export interface Option<T> {
   type: 'some' | 'none'
-  isSome: () => boolean
-  get: () => T | undefined
-  map: <K>(fn: (value: T) => K) => Option<K>
-  flatMap: <K>(fn: (value: T) => Option<K>) => Option<K>
-  chain: <K>(fn: (value: T) => Option<K>) => Option<K>
-  fold: <K>(ifEmpty: () => K, fn: (value: T) => K) => K
-  filter: (fn: (value: T) => boolean) => Option<T>
-  getOrElse: <K>(alternative: K) => T | K
-  toString: () => string
-  inspect: () => string
-  forEach: (fn: (value: T) => any) => void
+  isSome(): boolean
+  get(): T | undefined
+  map<K>(fn: (value: T) => K): Option<K>
+  flatMap<K>(fn: (value: T) => Option<K>): Option<K>
+  chain<K>(fn: (value: T) => Option<K>): Option<K>
+  fold<K>(ifEmpty: () => K, fn: (value: T) => K): K
+  filter<S extends T>(fn: (value: T) => value is S): Option<S>
+  filter(fn: (value: T) => boolean): Option<T>
+  getOrElse<K>(alternative: K): T | K
+  toString(): string
+  inspect(): string
+  forEach(fn: (value: T) => any): void
 }
 
 export interface Some<T> extends Option<T> {
@@ -22,7 +23,7 @@ export interface Some<T> extends Option<T> {
 
 export function Some<T>(value: T): Some<T> {
   const inspect = () => `Some(${JSON.stringify(value)})`
-  const flatMap = fn => fn(value)
+  const flatMap = <K>(fn: (value: T) => Option<K>) => fn(value)
 
   return {
     type: 'some',
@@ -92,7 +93,7 @@ export interface OptionFactory {
       MaybeOption<T3>,
       MaybeOption<T4>,
       MaybeOption<T5>,
-      MaybeOption<T6>
+      MaybeOption<T6>,
     ],
   ): Option<[T1, T2, T3, T4, T5, T6]>
   all<T1, T2, T3, T4, T5, T6, T7>(
@@ -103,7 +104,7 @@ export interface OptionFactory {
       MaybeOption<T4>,
       MaybeOption<T5>,
       MaybeOption<T6>,
-      MaybeOption<T7>
+      MaybeOption<T7>,
     ],
   ): Option<[T1, T2, T3, T4, T5, T6, T7]>
 
