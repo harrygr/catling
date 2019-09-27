@@ -111,6 +111,12 @@ describe('Option', () => {
       expect(option.filter(v => v.length < 10).type).toBe('some')
     })
 
+    it('narrows a to a type based on a type guard', () => {
+      const result = Option<string | number>('a').filter((n): n is number => typeof n === 'number')
+
+      expect(result.type).toBe('none')
+    })
+
     it('implements a getOrElse method', () => {
       const option = Some('hello')
 
