@@ -2,20 +2,21 @@ import { Option } from './option'
 import { Monoid } from './monoid'
 
 export interface List<T> extends Monoid<List<T>> {
-  toArray: () => T[]
-  toString: () => string
-  inspect: () => string
-  map: <K>(fn: (item: T) => K) => List<K>
-  filter: (fn: (el: T) => boolean) => List<T>
-  length: () => number
-  flatMap: <K>(fn: (item: T) => List<K>) => List<K>
-  chain: <K>(fn: (item: T) => List<K>) => List<K>
-  fold: <K>(initial: K, fn: (acc: K, el: T) => K) => K
-  head: () => T | undefined
-  headOption: () => Option<T>
-  tail: () => List<T>
-  find: (p: (item: T) => boolean) => Option<T>
-  contains: (p: (item: T) => boolean) => boolean
+  toArray(): T[]
+  toString(): string
+  inspect(): string
+  map<K>(fn: (item: T) => K): List<K>
+  filter<K extends T>(fn: (el: T) => el is K): List<K>
+  filter(fn: (el: T) => boolean): List<T>
+  length(): number
+  flatMap<K>(fn: (item: T) => List<K>): List<K>
+  chain<K>(fn: (item: T) => List<K>): List<K>
+  fold<K>(initial: K, fn: (acc: K, el: T) => K): K
+  head(): T | undefined
+  headOption(): Option<T>
+  tail(): List<T>
+  find(p: (item: T) => boolean): Option<T>
+  contains(p: (item: T) => boolean): boolean
 }
 
 export function List<T>(...items: T[]): List<T> {

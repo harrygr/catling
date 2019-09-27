@@ -20,6 +20,10 @@ describe('List', () => {
         .filter(x => x > 5)
         .toArray(),
     ).toEqual([10, 20])
+
+    const things = List<unknown>(1, 2, 4, 'a', 'b')
+    const filteredThings = things.filter((n): n is number => typeof n === 'number')
+    expect(filteredThings.toArray()).toEqual([1, 2, 4])
   })
 
   it('maps over a list', () => {
