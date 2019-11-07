@@ -1,0 +1,57 @@
+name: Catling CI
+
+on: [push]
+
+jobs:
+  build-n-test:
+    name: Build and test
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-deps-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.OS }}-deps-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-deps-
+    - name: Install deps
+      run: yarn install
+
+    - name: Build js
+      run: yarn build
+
+    - name: Run tests
+      run: yarn test --coverage
+
+    - name: Upload built package
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: build
+        path: build
+
+
+  publish:
+    runs-on: ubuntu-18.04
+    needs: build-n-test
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Download built package
+      uses: actions/download-artifact@v1.0.0
+      with:
+        name: build
+
+    - name: Semantic release
+      run: npx semantic-release@15.13.30
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
