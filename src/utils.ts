@@ -15,3 +15,7 @@ export function returnVoid() {}
 export function returnUndefined() {
   return undefined
 }
+
+export function returnEmptyArray() {
+  return []
+}
