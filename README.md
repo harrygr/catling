@@ -110,6 +110,15 @@ const name = Option(undefined).getOrElse('Bob')
 // 'Bob'
 ```
 
+#### toArray
+
+Returns an array containing the inner value if it's a Some, or an empty array if it's None.
+
+```typescript
+Option(undefined).toArray() // []
+Option('Bob').toArray() // ['Bob']
+```
+
 ### Either
 
 An either represents a value consisting of one of two possible types.

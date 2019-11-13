@@ -1,4 +1,4 @@
-import { F, T, returnVoid, identity, returnUndefined } from './utils'
+import { F, T, returnVoid, identity, returnUndefined, returnEmptyArray } from './utils'
 
 export interface Option<T> {
   type: 'some' | 'none'
@@ -14,6 +14,7 @@ export interface Option<T> {
   toString(): string
   inspect(): string
   forEach(fn: (value: T) => any): void
+  toArray(): T[]
 }
 
 export interface Some<T> extends Option<T> {
@@ -40,6 +41,7 @@ export function Some<T>(value: T): Some<T> {
     forEach: fn => {
       fn(value)
     },
+    toArray: () => [value],
   }
 }
 
@@ -63,6 +65,7 @@ export function None(): None {
     toString: inspect,
     inspect,
     forEach: returnVoid,
+    toArray: returnEmptyArray,
   }
 }
 

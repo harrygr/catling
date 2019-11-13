@@ -48,7 +48,12 @@ describe('Option', () => {
     it('implements a fold method', () => {
       const option = None()
 
-      expect(option.fold(() => 'foo', v => v)).toBe('foo')
+      expect(
+        option.fold(
+          () => 'foo',
+          v => v,
+        ),
+      ).toBe('foo')
     })
 
     it('implements a getOrElse method', () => {
@@ -65,6 +70,10 @@ describe('Option', () => {
       const sideEffect = jest.fn()
       None().forEach(sideEffect)
       expect(sideEffect).not.toBeCalledWith('foo')
+    })
+
+    it('implements a toArray method', () => {
+      expect(None().toArray()).toEqual([])
     })
   })
 
@@ -101,7 +110,12 @@ describe('Option', () => {
     it('implements a fold method', () => {
       const option = Some('hello')
 
-      expect(option.fold(() => 'foo', v => v)).toBe('hello')
+      expect(
+        option.fold(
+          () => 'foo',
+          v => v,
+        ),
+      ).toBe('hello')
     })
 
     it('implements a filter method', () => {
@@ -131,6 +145,10 @@ describe('Option', () => {
       const sideEffect = jest.fn()
       Some('foo').forEach(sideEffect)
       expect(sideEffect).toBeCalledWith('foo')
+    })
+
+    it('implements a toArray method', () => {
+      expect(Some('foo').toArray()).toEqual(['foo'])
     })
   })
 
