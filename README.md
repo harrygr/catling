@@ -169,8 +169,8 @@ A writer is a context that carries with it some sort of log with its computation
 import { Writer, List } from 'catling'
 
 const myWriter = Writer(List('initial value'), 10)
-                  .flatMap(val => Writer(List('adding 5'), val + 5)
-                  .flatMap(val => Writer(List('doubling'), val * 2)
+                  .flatMap(val => Writer(List('adding 5'), val + 5))
+                  .flatMap(val => Writer(List('doubling'), val * 2))
 
 console.log(myWriter) // Writer(List(initial value, adding 5, doubling), 30)
 ```
