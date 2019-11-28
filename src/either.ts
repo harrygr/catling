@@ -17,12 +17,21 @@ export interface Either<L, R> {
   fold: <K>(leftFn: (left: L) => K, rightFn: (right: R) => K) => K
 }
 
-export interface Right<T> extends Either<any, T> {}
+export const tryCatch = <T, E = unknown>(fn: () => T): Either<E, T> => {
+  try {
+    return Right(fn())
+  } catch (err) {
+    return Left(err)
+  }
+}
 
 export const Either = {
   right: Right,
   left: Left,
+  tryCatch,
 }
+
+export interface Right<T> extends Either<any, T> {}
 
 export function Right<T>(val: T): Right<T> {
   const inspect = () => `Right(${JSON.stringify(val)})`

@@ -1,7 +1,25 @@
-import { Left, Right } from './either'
+import { Left, Right, tryCatch } from './either'
 import { List } from './list'
 
 describe('Either', () => {
+  describe('tryCatch', () => {
+    it("returns an Right from a function that doesn't throw", () => {
+      const result = tryCatch(() => 'foo')
+
+      expect(result.right()).toBe('foo')
+    })
+
+    it('returns a Left from a function that throws', () => {
+      const err = new Error('something bad happened')
+
+      const result = tryCatch(() => {
+        throw err
+      })
+
+      expect(result.left()).toEqual(err)
+    })
+  })
+
   describe('Right', () => {
     it('gets a string representation of itself', () => {
       expect(Right('foo').toString()).toBe('Right("foo")')
