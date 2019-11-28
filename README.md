@@ -115,8 +115,17 @@ const name = Option(undefined).getOrElse('Bob')
 Returns an array containing the inner value if it's a Some, or an empty array if it's None.
 
 ```typescript
-Option(undefined).toArray() // []
-Option('Bob').toArray() // ['Bob']
+None().toArray() // []
+Some('Bob').toArray() // ['Bob']
+```
+
+#### toList
+
+Returns a List containing the inner value if it's a Some, or an empty List if it's None.
+
+```typescript
+None().toList() // List()
+Some('Bob').toList() // List('Bob')
 ```
 
 ### Either
