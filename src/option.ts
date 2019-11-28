@@ -1,4 +1,5 @@
 import { F, T, returnVoid, identity, returnUndefined, returnEmptyArray } from './utils'
+import { List } from './list'
 
 export interface Option<T> {
   type: 'some' | 'none'
@@ -12,6 +13,7 @@ export interface Option<T> {
   filter(fn: (value: T) => boolean): Option<T>
   getOrElse<K>(alternative: K): T | K
   toString(): string
+  toList: () => List<T>
   inspect(): string
   forEach(fn: (value: T) => any): void
   toArray(): T[]
@@ -37,6 +39,7 @@ export function Some<T>(value: T): Some<T> {
     filter: fn => (fn(value) ? Some(value) : None()),
     getOrElse: () => value,
     toString: inspect,
+    toList: () => List(value),
     inspect,
     forEach: fn => {
       fn(value)
@@ -63,6 +66,7 @@ export function None(): None {
     filter: None,
     getOrElse: identity,
     toString: inspect,
+    toList: () => List(),
     inspect,
     forEach: returnVoid,
     toArray: returnEmptyArray,

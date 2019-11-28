@@ -1,4 +1,5 @@
 import { Option, Some, None } from './option'
+import { List } from './list'
 
 describe('Option', () => {
   it('constructs a None from a null or undefined value', () => {
@@ -75,6 +76,14 @@ describe('Option', () => {
     it('implements a toArray method', () => {
       expect(None().toArray()).toEqual([])
     })
+
+    it('implements a toList method', () => {
+      expect(
+        None()
+          .toList()
+          .toString(),
+      ).toEqual(List().toString())
+    })
   })
 
   describe('Some', () => {
@@ -149,6 +158,14 @@ describe('Option', () => {
 
     it('implements a toArray method', () => {
       expect(Some('foo').toArray()).toEqual(['foo'])
+    })
+
+    it('implements a toList method', () => {
+      expect(
+        Some('foo')
+          .toList()
+          .toString(),
+      ).toEqual(List('foo').toString())
     })
   })
 
