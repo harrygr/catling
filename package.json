@@ -30,7 +30,8 @@
     "watch": "tsc -w -p tsconfig.build.json",
     "test": "jest",
     "test:watch": "jest --watch",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "gen-docs": "npx typedoc --out docs --exclude \"**/*+(index|.spec|.e2e).ts\" src"
   },
   "license": "MIT",
   "dependencies": {},

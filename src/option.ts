@@ -1,21 +1,72 @@
 import { F, T, returnVoid, identity, returnUndefined, returnEmptyArray } from './utils'
 import { List } from './list'
 
+/**
+ * Represents optional values. Instances of `Option` are an instance of `Some` or `None`.
+ *
+ * @typeparam T  The type of the value in the option
+ */
 export interface Option<T> {
   type: 'some' | 'none'
   isSome(): boolean
   get(): T | undefined
+
+  /**
+   * Returns a Some containing the result of applying `fn` to this Option's value if this
+   * Option is nonempty.
+   * @param fn the function to apply
+   */
   map<K>(fn: (value: T) => K): Option<K>
+
+  /**
+   * Returns the result of applying `fn` to this Option's value if this Option is nonempty.
+   * Returns a None if this Option is empty. Slightly different from map in that `fn` is expected
+   * to return an Option (which could be a None).
+   * @param fn
+   */
   flatMap<K>(fn: (value: T) => Option<K>): Option<K>
   chain<K>(fn: (value: T) => Option<K>): Option<K>
+
+  /**
+   * Returns the result of applying `fn` to this Option's value if the Option is nonempty. Otherwise, evaluates expression `ifEmpty`.
+   * @param ifEmpty
+   * @param fn
+   */
   fold<K>(ifEmpty: () => K, fn: (value: T) => K): K
-  filter<S extends T>(fn: (value: T) => value is S): Option<S>
-  filter(fn: (value: T) => boolean): Option<T>
+
+  /**
+   * Returns this Option if it is nonempty and applying the predicate `p` to this Option's value returns true.
+   * Otherwise, return a None.
+   *
+   * @param p the predicate used for testing
+   */
+  filter<S extends T>(p: (value: T) => value is S): Option<S>
+
+  /**
+   * Returns this Option if it is nonempty and applying the predicate `p` to this Option's value returns true.
+   * Otherwise, return a None.
+   *
+   * @param p the predicate used for testing
+   */
+  filter(p: (value: T) => boolean): Option<T>
+
+  /**
+   * Returns the option's value if the option is nonempty, otherwise return `alternative`.
+   * @param alternative
+   */
   getOrElse<K>(alternative: K): T | K
   toString(): string
+
+  /**
+   * Unary List of optional value, otherwise a empty List
+   */
   toList: () => List<T>
   inspect(): string
   forEach(fn: (value: T) => any): void
+
+  /**
+   * Unary Array of optional value, otherwise an empty array
+   */
   toArray(): T[]
 }
 
