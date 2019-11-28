@@ -1,4 +1,5 @@
 import { Left, Right } from './either'
+import { List } from './list'
 
 describe('Either', () => {
   describe('Right', () => {
@@ -29,8 +30,23 @@ describe('Either', () => {
     })
 
     it('folds over the value', () => {
-      const result = Right('foo').fold(e => `failed with ${e}`, v => `succeeded with ${v}`)
+      const result = Right('foo').fold(
+        e => `failed with ${e}`,
+        v => `succeeded with ${v}`,
+      )
       expect(result).toBe('succeeded with foo')
+    })
+
+    it('implements a toArray method', () => {
+      expect(Right('foo').toArray()).toEqual(['foo'])
+    })
+
+    it('implements a toList method', () => {
+      expect(
+        Right('foo')
+          .toList()
+          .toString(),
+      ).toEqual(List('foo').toString())
     })
   })
 
@@ -57,8 +73,23 @@ describe('Either', () => {
     })
 
     it('folds over the value', () => {
-      const result = Left('gah').fold(e => `failed with ${e}`, v => `succeeded with ${v}`)
+      const result = Left('gah').fold(
+        e => `failed with ${e}`,
+        v => `succeeded with ${v}`,
+      )
       expect(result).toBe('failed with gah')
+    })
+
+    it('implements a toArray method', () => {
+      expect(Left('foo').toArray()).toEqual([])
+    })
+
+    it('implements a toList method', () => {
+      expect(
+        Left('foo')
+          .toList()
+          .toString(),
+      ).toEqual(List().toString())
     })
   })
 })

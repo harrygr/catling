@@ -155,6 +155,24 @@ const myNum2 = divide(0, 10)
 console.log(myNum2) // "Left("Cannot divide by zero")"
 ```
 
+#### toArray
+
+Returns an array containing the inner value if it's a Right, or an empty array if it's Left.
+
+```typescript
+Left('fail').toArray() // []
+Right('success').toArray() // ['success']
+```
+
+#### toList
+
+Returns a List containing the inner value if it's a Right, or an empty List if it's Left.
+
+```typescript
+Left('fail').toList() // List()
+Right('success').toList() // List('success')
+```
+
 ### Immutable List
 
 An immutable list behaves much like the native array, expect it cannot be mutated.

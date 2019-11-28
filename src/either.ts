@@ -1,5 +1,6 @@
 import { Option, None } from './option'
-import { returnVoid } from './utils'
+import { returnVoid, returnEmptyArray } from './utils'
+import { List } from './list'
 
 export interface Either<L, R> {
   toString: () => string
@@ -11,6 +12,8 @@ export interface Either<L, R> {
   right(): R | void
   left(): L | void
   toOption: () => Option<R>
+  toArray(): R[]
+  toList(): List<R>
   fold: <K>(leftFn: (left: L) => K, rightFn: (right: R) => K) => K
 }
 
@@ -34,6 +37,8 @@ export function Right<T>(val: T): Right<T> {
     right: () => val,
     left: returnVoid,
     toOption: () => Option(val),
+    toArray: () => [val],
+    toList: () => List(val),
     fold: (_, fn) => fn(val),
   }
 }
@@ -53,6 +58,8 @@ export function Left<T>(val: T): Left<T> {
     right: returnVoid,
     left: () => val,
     toOption: None,
+    toArray: returnEmptyArray,
+    toList: () => List(),
     fold: fn => fn(val),
   }
 }
