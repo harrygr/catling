@@ -1,0 +1,29 @@
+name: Docs
+
+on:
+  push:
+    branches:
+    - master
+    - hg/typedoc
+
+jobs:
+  publish-docs:
+    name: Publish docs
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - name: Gen docs
+      run: yarn gen-docs
+
+    - name: Publish to GH pages
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BASE_BRANCH: hg/typedoc # The branch the action should deploy from.
+        BRANCH: docs # The branch the action should deploy to.
+        FOLDER: docs # The folder the action should deploy.
