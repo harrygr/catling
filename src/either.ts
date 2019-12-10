@@ -14,6 +14,7 @@ export interface Either<L, R> {
   toOption: () => Option<R>
   toArray(): R[]
   toList(): List<R>
+  toPromise(): Promise<R>
   fold: <K>(leftFn: (left: L) => K, rightFn: (right: R) => K) => K
 }
 
@@ -48,6 +49,7 @@ export function Right<T>(val: T): Right<T> {
     toOption: () => Option(val),
     toArray: () => [val],
     toList: () => List(val),
+    toPromise: () => Promise.resolve(val),
     fold: (_, fn) => fn(val),
   }
 }
@@ -69,6 +71,7 @@ export function Left<T>(val: T): Left<T> {
     toOption: None,
     toArray: returnEmptyArray,
     toList: () => List(),
+    toPromise: () => Promise.reject(val),
     fold: fn => fn(val),
   }
 }

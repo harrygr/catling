@@ -66,6 +66,15 @@ describe('Either', () => {
           .toString(),
       ).toEqual(List('foo').toString())
     })
+
+    it('implements a toPromise method', async () => {
+      const promise1 = Right('foo').toPromise()
+      // it should flatten promises
+      const promise2 = Right(Promise.resolve('bar')).toPromise()
+
+      expect(await promise1).toBe('foo')
+      expect(await promise2).toBe('bar')
+    })
   })
 
   describe('Left', () => {
@@ -108,6 +117,15 @@ describe('Either', () => {
           .toList()
           .toString(),
       ).toEqual(List().toString())
+    })
+
+    it('implements a toPromise method', () => {
+      const error = new Error('oh no!')
+
+      return Left(error)
+        .toPromise()
+        .then(() => Promise.reject('this should not happen'))
+        .catch(err => expect(err).toBe(error))
     })
   })
 })
