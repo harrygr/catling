@@ -190,7 +190,7 @@ console.log(result) // 22
 
 ### Writer
 
-A writer is a context that carries with it some sort of log with its computation.
+A Writer is a context that carries with it some sort of log with its computation.
 
 ```typescript
 import { Writer, List } from 'catling'
@@ -203,6 +203,22 @@ console.log(myWriter) // Writer(List(initial value, adding 5, doubling), 30)
 ```
 
 The log part of the writer must be a semigroup according to the [fantasy-land spec][fantasy-land-semigroup], meaning it must have a `concat` method. This is used to combine the logs from the source writer.
+
+### Reader
+
+A Reader allows injecting dependencies into your functions. It delays execution until the Reader is run with the desired configuration.
+
+```typescript
+const connect = (endpoint: string) =>
+  Reader((config: Config) => `POST ${config.url}:${config.port}/${endpoint}`)
+
+connect('session').run({
+  url: 'http://example.com',
+  port: 8000,
+})
+
+// POST http://example.com:8000/session
+```
 
 
 [cats]: https://github.com/typelevel/cats
