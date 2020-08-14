@@ -1,4 +1,4 @@
-import { Left, Right, tryCatch } from './either'
+import { Left, Right, tryCatch, Either } from './either'
 import { List } from './list'
 
 describe('Either', () => {
@@ -20,6 +20,21 @@ describe('Either', () => {
     })
   })
 
+  describe('fromPromise', () => {
+    it('returns a Promise<Right> for a promise that resolves', async () => {
+      const result = await Either.fromPromise(Promise.resolve('hello'))
+
+      expect(result.right()).toBe('hello')
+    })
+
+    it('returns a Promise<Left> for a promise that rejects', async () => {
+      const err = new Error('Something bad happened')
+      const result = await Either.fromPromise(Promise.reject(new Error('Something bad happened')))
+
+      expect(result.left()).toEqual(err)
+    })
+  })
+
   describe('Right', () => {
     it('gets a string representation of itself', () => {
       expect(Right('foo').toString()).toBe('Right("foo")')
@@ -32,7 +47,7 @@ describe('Either', () => {
     })
 
     it('maps over a right', () => {
-      const either = Right('foo').map(s => s.length)
+      const either = Right('foo').map((s) => s.length)
       expect(either.right()).toBe(3)
     })
 
@@ -43,14 +58,14 @@ describe('Either', () => {
     })
 
     it('left maps over a right with no effect', () => {
-      const either = Right('foo').leftMap(s => s.length)
+      const either = Right('foo').leftMap((s) => s.length)
       expect(either.right()).toBe('foo')
     })
 
     it('folds over the value', () => {
       const result = Right('foo').fold(
-        e => `failed with ${e}`,
-        v => `succeeded with ${v}`,
+        (e) => `failed with ${e}`,
+        (v) => `succeeded with ${v}`,
       )
       expect(result).toBe('succeeded with foo')
     })
@@ -60,11 +75,7 @@ describe('Either', () => {
     })
 
     it('implements a toList method', () => {
-      expect(
-        Right('foo')
-          .toList()
-          .toString(),
-      ).toEqual(List('foo').toString())
+      expect(Right('foo').toList().toString()).toEqual(List('foo').toString())
     })
 
     it('implements a toPromise method', async () => {
@@ -75,6 +86,15 @@ describe('Either', () => {
       expect(await promise1).toBe('foo')
       expect(await promise2).toBe('bar')
     })
+
+    it('maps with an async function', async () => {
+      const name = Either.tryCatch(() => 'bob')
+      const greetAsync = (name: string) => Promise.resolve(`hello, ${name}`)
+
+      const result = name.mapAsync(greetAsync)
+
+      await result.then((greeting) => expect(greeting.right()).toBe('hello, bob'))
+    })
   })
 
   describe('Left', () => {
@@ -84,7 +104,7 @@ describe('Either', () => {
     })
 
     it('maps over a left with no effect', () => {
-      const either = Left('foo').map(s => s.length)
+      const either = Left('foo').map((s) => s.length)
       expect(either.left()).toBe('foo')
     })
 
@@ -94,15 +114,25 @@ describe('Either', () => {
       expect(either.left()).toBe('gah')
     })
 
+    it('asyncMaps with over a left with no effect', async () => {
+      const err = new Error('Oh no')
+      const either = Left(err)
+      const greetAsync = (name: string) => Promise.resolve(`hello, ${name}`)
+
+      const result = either.mapAsync(greetAsync)
+
+      await result.then((greeting) => expect(greeting.left()).toEqual(err))
+    })
+
     it('leftMaps over a left', () => {
-      const either = Left('gah').leftMap(s => s.length)
+      const either = Left('gah').leftMap((s) => s.length)
       expect(either.left()).toBe(3)
     })
 
     it('folds over the value', () => {
       const result = Left('gah').fold(
-        e => `failed with ${e}`,
-        v => `succeeded with ${v}`,
+        (e) => `failed with ${e}`,
+        (v) => `succeeded with ${v}`,
       )
       expect(result).toBe('failed with gah')
     })
@@ -112,11 +142,7 @@ describe('Either', () => {
     })
 
     it('implements a toList method', () => {
-      expect(
-        Left('foo')
-          .toList()
-          .toString(),
-      ).toEqual(List().toString())
+      expect(Left('foo').toList().toString()).toEqual(List().toString())
     })
 
     it('implements a toPromise method', () => {
@@ -125,7 +151,7 @@ describe('Either', () => {
       return Left(error)
         .toPromise()
         .then(() => Promise.reject('this should not happen'))
-        .catch(err => expect(err).toBe(error))
+        .catch((err) => expect(err).toBe(error))
     })
   })
 })
