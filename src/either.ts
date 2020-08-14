@@ -16,6 +16,7 @@ export interface Either<L, R> {
   toList(): List<R>
   toPromise(): Promise<R>
   fold: <K>(leftFn: (left: L) => K, rightFn: (right: R) => K) => K
+  mapAsync: <K>(fn: (value: R) => Promise<K>) => Promise<Either<L, K>>
 }
 
 export const tryCatch = <T, E = unknown>(fn: () => T): Either<E, T> => {
@@ -26,21 +27,25 @@ export const tryCatch = <T, E = unknown>(fn: () => T): Either<E, T> => {
   }
 }
 
+export const fromPromise = async <T, E = unknown>(promise: Promise<T>): Promise<Either<E, T>> =>
+  promise.then(Right).catch((err: E) => Left(err))
+
 export const Either = {
   right: Right,
   left: Left,
   tryCatch,
+  fromPromise,
 }
 
 export interface Right<T> extends Either<any, T> {}
 
 export function Right<T>(val: T): Right<T> {
   const inspect = () => `Right(${JSON.stringify(val)})`
-  const flatMap = fn => fn(val)
+  const flatMap = (fn) => fn(val)
   return {
     toString: inspect,
     inspect,
-    map: fn => Right(fn(val)),
+    map: (fn) => Right(fn(val)),
     leftMap: () => Right(val),
     flatMap,
     chain: flatMap,
@@ -51,6 +56,7 @@ export function Right<T>(val: T): Right<T> {
     toList: () => List(val),
     toPromise: () => Promise.resolve(val),
     fold: (_, fn) => fn(val),
+    mapAsync: (fn) => fromPromise(fn(val)),
   }
 }
 
@@ -63,7 +69,7 @@ export function Left<T>(val: T): Left<T> {
     toString: inspect,
     inspect,
     map: () => Left(val),
-    leftMap: fn => Left(fn(val)),
+    leftMap: (fn) => Left(fn(val)),
     flatMap: flatMap,
     chain: flatMap,
     right: returnVoid,
@@ -72,6 +78,7 @@ export function Left<T>(val: T): Left<T> {
     toArray: returnEmptyArray,
     toList: () => List(),
     toPromise: () => Promise.reject(val),
-    fold: fn => fn(val),
+    fold: (fn) => fn(val),
+    mapAsync: () => Promise.resolve(Left(val)),
   }
 }
